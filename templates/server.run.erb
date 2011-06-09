@@ -2,12 +2,14 @@
 . <%= sedue_home -%>/sedue-env.sh
 
 sleep 10
-export GEM_PATH="<%= sedue_home -%>/sedue"
-export SEDUE_SERVER="<%= sedue_home -%>/bin/<%= server_bin_name -%>"
+export SEDUE_HOME=<%= sedue_home -%>
+export INSTANCE=<%= instance -%>
+export GEM_PATH="$SEDUE_HOME/sedue"
+export SEDUE_SERVER="$SEDUE_HOME/bin/<%= server_bin_name -%>"
 export SEDUE_SERVER_NAME="<%= server_script_name -%>"
 
-export LOG="<%= sedue_home -%>/log/<%= instance -%>/error.log"
-export BTLOG="<%= sedue_home -%>/log/<%= instance -%>/$SEDUE_SERVER_NAME-backtrace.log"
+export LOG="$SEDUE_HOME/log/$INSTANCE/error.log"
+export BTLOG="$SEDUE_HOME/log/$INSTANCE/$SEDUE_SERVER_NAME-backtrace.log"
 
 echo "LAUNCH $SEDUE_SERVER_NAME: confsvrs=<%= config_servers -%>" >> $LOG
-exec $SEDUE_SERVER -instance_name <%= instance -%> -confsvr_type mongodb -confsvrs <%= config_servers -%> -noconf -stderrthreshold 3 2>>$BTLOG
+exec $SEDUE_SERVER -instance_name $INSTANCE -confsvr_type mongodb -confsvrs <%= config_servers -%> -noconf -stderrthreshold 3 2>>$BTLOG

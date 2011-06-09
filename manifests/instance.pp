@@ -1,12 +1,14 @@
+# sedue_home is provided as a custom fact.
+
 class sedue::instance {
-  $sedue_home = '/home/nobu/sedue' # TODO: replace this with fact.
   file { 'serv_directory':
-    path => "${sedue_home}/etc/serve/${instance}",
+    path => "${sedue_home}/etc/serve/puppet_test",
     ensure => directory,
     owner => $user,
     group => $user,
     mode => '0755'
   }
+  # TODO: generate serve-supervise_#{instance} symlink
 
   class { 'sedue::searcher':
     user => 'nobu',
