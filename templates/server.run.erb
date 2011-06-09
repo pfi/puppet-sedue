@@ -1,0 +1,13 @@
+#!/bin/bash
+. <%= sedue_home -%>/sedue-env.sh
+
+sleep 10
+export GEM_PATH="<%= sedue_home -%>/sedue"
+export SEDUE_SERVER="<%= sedue_home -%>/bin/<%= server_bin_name -%>"
+export SEDUE_SERVER_NAME="<%= server_script_name -%>"
+
+export LOG="<%= sedue_home -%>/log/<%= instance -%>/error.log"
+export BTLOG="<%= sedue_home -%>/log/<%= instance -%>/$SEDUE_SERVER_NAME-backtrace.log"
+
+echo "LAUNCH $SEDUE_SERVER_NAME: confsvrs=<%= config_servers -%>" >> $LOG
+exec $SEDUE_SERVER -instance_name <%= instance -%> -confsvr_type mongodb -confsvrs <%= config_servers -%> -noconf -stderrthreshold 3 2>>$BTLOG
