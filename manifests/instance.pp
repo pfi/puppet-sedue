@@ -1,4 +1,5 @@
 class sedue::instance {
+  $sedue_home = '/home/nobu/sedue' # TODO: replace this with fact.
   file { 'serv_directory':
     path => "${sedue_home}/etc/serve/${instance}",
     ensure => directory,

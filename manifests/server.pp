@@ -1,4 +1,4 @@
-class sedue::server($user, $instance, $config_servers, $server_type) {
+define sedue::server($user, $instance, $config_servers, $server_type) {
   case $server_type {
     'searcher': {
       $server_bin_name = 'sedue-rpc-searcher'
@@ -10,21 +10,13 @@ class sedue::server($user, $instance, $config_servers, $server_type) {
     }
   }
 
-  $sedue_home = '/home/nobu/sedue' # TODO: replace this with fact.
-  file { 'serv_directory':
-    path => "${sedue_home}/etc/serve/${instance}",
-    ensure => directory,
-    owner => $user,
-    group => $user,
-    mode => '0755'
-  }
-
   file { "${server_type}_run_file":
     path => "${sedue_home}/etc/serve/${instance}/${server_script_name}.run",
     owner => $user,
     group => $user,
     mode => '0755',
-    content => template("sedue/server.run.erb")
+    content => template("sedue/server.run.erb"),
+    require => File['serv_directory']
   }
 
   file { "${server_type}_init_script":
