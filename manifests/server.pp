@@ -1,4 +1,8 @@
 define sedue::server($user, $instance, $config_servers, $server_type) {
+  # TODO: make these parameters assignable
+  $server_sleep_interval = 3
+  $server_name = '' # TODO: make this hostname or the value of name parameter
+
   case $server_type {
     'searcher': {
       $server_bin_name = 'sedue-rpc-searcher'
