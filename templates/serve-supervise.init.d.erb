@@ -6,12 +6,12 @@
 SEDUE_HOME=<%= sedue_home %>
 INSTANCE_NAME=<%= instance %>
 
-. $SEDUE_HOME
+. $SEDUE_HOME/sedue-env.sh
 
 KICKSTART="$SEDUE_HOME/bin/serve-kickstart"
 SERVLIST="$SEDUE_HOME/bin/serve-list"
 SUPERVISE="$SEDUE_HOME/bin/serve-supervise-$INSTANCE_NAME"
-SERVDIR="#$SEDUE_HOME/etc/serve/$INSTANCE_NAME/"
+SERVDIR="$SEDUE_HOME/etc/serve/$INSTANCE_NAME/"
 
 get_processes() {
     pid_list=""

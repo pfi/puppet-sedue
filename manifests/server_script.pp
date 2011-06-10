@@ -20,7 +20,7 @@ define sedue::server_script($user, $instance, $config_servers, $server_type) {
     group => $user,
     mode => '0755',
     content => template("sedue/server.run.erb"),
-    require => File['serv_directory']
+    require => File['serve_directory']
   }
 
   file { "${server_type}_init_script":

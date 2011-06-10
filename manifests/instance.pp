@@ -17,4 +17,6 @@ class sedue::instance($instance_name) {
     instance => $instance_name,
     config_servers => 'bull0:25999'
   }
+
+  # TODO: create all necessary directories like $SEDUE_HOME/arc-dir/$INSTANCE
 }
