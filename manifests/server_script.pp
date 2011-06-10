@@ -1,4 +1,4 @@
-define sedue::server($user, $instance, $config_servers, $server_type) {
+define sedue::server_script($user, $instance, $config_servers, $server_type) {
   # TODO: make these parameters assignable
   $server_sleep_interval = 3
   $server_name = '' # TODO: make this hostname or the value of name parameter
