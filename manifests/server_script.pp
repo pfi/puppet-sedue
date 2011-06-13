@@ -30,6 +30,7 @@ define sedue::server_script($user, $instance, $config_servers, $server_type) {
     }
   }
 
+  # files for serve supervise
   file { "${server_type}_run_file":
     path => "${sedue_home}/etc/serve/${instance}/${server_script_name}.run",
     owner => $user,
@@ -37,6 +38,22 @@ define sedue::server_script($user, $instance, $config_servers, $server_type) {
     mode => '0755',
     content => template("sedue/server.run.erb"),
     require => File['serve_directory']
+  }
+
+  file { "${server_type}_run_directory":
+    path => "${sedue_home}/etc/serve/${instance}/${server_script_name}",
+    owner => $user,
+    group => $user,
+    mode => '0755',
+    ensure => 'directory',
+    require => File['serve_directory']
+  }
+
+  file { "${server_type}_run_symlink":
+    path => "${sedue_home}/etc/serve/${instance}/${server_script_name}/run",
+    ensure => 'link',
+    target => "${sedue_home}/etc/serve/${instance}/${server_script_name}.run",
+    require => [File["${server_type}_run_file"], File["${server_type}_run_directory"]]
   }
 
   file { "${server_type}_init_script":

@@ -1,8 +1,8 @@
 class sedue::serve_supervise($user, $instance) {
   # TODO: this does not create a new directory?
   file { 'serve_directory':
-    path => "${sedue_home}/etc/serve/${instance_name}",
-    ensure => directory,
+    path => "${sedue_home}/etc/serve/${instance}",
+    ensure => 'directory',
     owner => $user,
     group => $user,
     mode => '0755'
@@ -14,27 +14,5 @@ class sedue::serve_supervise($user, $instance) {
     path => "${sedue_home}/bin/serve-supervise-${instance_name}",
     ensure => link,
     target => "${sedue_home}/bin/serve-supervise"
-  }
-
-  file { 'serve_supervise_init_script':
-    path => "${sedue_home}/etc/init.d/serve-supervise-${instance}",
-    owner => $user,
-    group => $user,
-    mode => '0755',
-    content => template("sedue/serve-supervise.init.d.erb"),
-    require => File['serve_directory']
-  }
-
-  service { 'serve_supervise_service':
-    path => "${sedue_home}/etc/init.d/",
-    name => "serve-supervise-${instance}",
-    ensure => running,
-    provider => 'init',
-    require => [
-      Class['sedue::searcher_script'],
-      Class['sedue::indexer_script'],
-      File['serve_supervise_init_script'],
-      File['serve_supervise_bin_symlink']
-    ]
   }
 }
