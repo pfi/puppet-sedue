@@ -92,8 +92,10 @@ status() {
     if [ "$pid_list" != "" ]; then
         echo "Following serve-supervise processes are running";
         echo $pid_list
+        exit 0
     else
         echo "serve-supervise is stopped."
+        exit 3
     fi
 }
 

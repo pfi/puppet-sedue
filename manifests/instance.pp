@@ -1,20 +1,20 @@
 # sedue_home is provided as a custom fact.
 
-class sedue::instance($instance_name) {
+class sedue::instance($instance) {
   class { 'sedue::serve_supervise':
     user => 'nobu',
-    instance => $instance_name
+    instance => $instance
   }
 
   class { 'sedue::searcher_script':
     user => 'nobu',
-    instance => $instance_name,
+    instance => $instance,
     config_servers => 'bull0:25999'
   }
 
   class { 'sedue::indexer_script':
     user => 'nobu',
-    instance => $instance_name,
+    instance => $instance,
     config_servers => 'bull0:25999'
   }
 

@@ -82,8 +82,10 @@ status() {
     get_serv_pid
     if [ $pid -gt 0 ]; then
         echo "$SERVNAME is running: pid=$pid";
+        exit 0
     else
         echo "$SERVNAME already stopped."
+        exit 3
     fi
 }
 

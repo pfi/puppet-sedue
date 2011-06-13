@@ -1,8 +1,4 @@
-define sedue::server_script($user, $instance, $config_servers, $server_type) {
-  # TODO: make these parameters assignable
-  $server_sleep_interval = 3
-  $server_name = '' # TODO: make this hostname or the value of name parameter
-
+define sedue::server_process($instance, $status, $server_type) {
   case $server_type {
     'searcher': {
       $server_bin_name = 'sedue-rpc-searcher'
@@ -30,20 +26,12 @@ define sedue::server_script($user, $instance, $config_servers, $server_type) {
     }
   }
 
-  file { "${server_type}_run_file":
-    path => "${sedue_home}/etc/serve/${instance}/${server_script_name}.run",
-    owner => $user,
-    group => $user,
-    mode => '0755',
-    content => template("sedue/server.run.erb"),
-    require => File['serve_directory']
-  }
-
-  file { "${server_type}_init_script":
-    path => "${sedue_home}/etc/init.d/${server_script_name}-${instance}",
-    owner => $user,
-    group => $user,
-    mode => '0755',
-    content => template("sedue/server.init.d.erb")
+  service { "${server_type}_process":
+    path => "${sedue_home}/etc/init.d/",
+    name => "${server_script_name}-${instance}",
+    ensure => $status,
+    hasstatus => 'true', # this need to be true
+    provider => 'init',
+    require => Class["sedue::serve_supervise"]
   }
 }

@@ -1,4 +1,5 @@
 class sedue::serve_supervise($user, $instance) {
+  # TODO: this does not create a new directory?
   file { 'serve_directory':
     path => "${sedue_home}/etc/serve/${instance_name}",
     ensure => directory,
@@ -29,6 +30,11 @@ class sedue::serve_supervise($user, $instance) {
     name => "serve-supervise-${instance}",
     ensure => running,
     provider => 'init',
-    require => [Class['searcher_script'], Class['indexer_script'], File['serve_supervise_init_script'], File['serve_supervise_bin_symlink']]
+    require => [
+      Class['sedue::searcher_script'],
+      Class['sedue::indexer_script'],
+      File['serve_supervise_init_script'],
+      File['serve_supervise_bin_symlink']
+    ]
   }
 }
