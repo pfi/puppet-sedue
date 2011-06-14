@@ -10,8 +10,21 @@ INSTANCE_NAME=<%= instance %>
 
 SERVNAME="<%= server_script_name %>"
 SERVDIR="$SEDUE_HOME/etc/serve/$INSTANCE_NAME"
+SUPERVISE="$SEDUE_HOME/bin/serve-supervise-$INSTANCE_NAME"
 SERV="$SEDUE_HOME/bin/serve -s $SERVDIR"
 SLEEP_INTERVAL=<%= server_sleep_interval %>
+
+get_supervise_pid() {
+    pid=-1
+    for p in `pgrep -f $SUPERVISE`
+    do
+        # check opened fds with the serve directory name and server's name.
+        if [ `ls -l /proc/$p/fd | grep $SERVDIR | grep $SERVNAME | wc -l` -gt 0 ]; then
+          pid=$p
+          break
+        fi
+    done
+}
 
 get_serv_pid() {
     $SERV $SERVNAME stat >/dev/null
@@ -20,18 +33,47 @@ get_serv_pid() {
         pid=$($SERV $SERVNAME stat | awk -F '=' '{print $2}');
     else
         pid=-1
-        echo "ERROR: Failed to run serve command. Please start serve-supervise first."
-        exit 1
     fi
 }
 
 start() {
+    get_supervise_pid
+    if [ $pid -lt 0 ]; then
+        # A control FIFO must be removed before starting supervise.
+        # If no supervise process were found by get_supervise_pid,
+        # there would be no reader for the control FIFO.
+        if [ -p $SERVDIR/$SERVNAME/control ]; then
+            rm $SERVDIR/$SERVNAME/control
+            RETVAL=$?
+            if [ $RETVAL -ne 0 ]; then
+                echo "ERROR: Failed to remove control file. Please remove it manually: $SERVDIR/$SERVNAME/control"
+                exit 1
+            fi
+        fi
+
+        # -d for daemonize
+        $SUPERVISE -x -d -c $SERVDIR/$SERVNAME/control -s $SERVDIR/$SERVNAME/stat -- $SERVDIR/$SERVNAME.run >/dev/null 2>&1
+        RETVAL=$?
+        if [ $RETVAL -ne 0 ]; then
+            echo "ERROR: Failed to start supervise process"
+            exit 1
+        fi
+
+        sleep $SLEEP_INTERVAL
+        get_supervise_pid
+        if [ $pid -lt 0 ]; then
+            echo "ERROR: Failed to start supervise process"
+            exit 1
+        fi
+    fi
+
     get_serv_pid
     if [ $pid -gt 0 ]; then
         echo "ERROR: $SERVNAME already running: pid=$pid"
         exit 1
     fi
     echo "Starting <%= server_type %> <%= server_name %>..."
+
     $SERV $SERVNAME start
     RETVAL=$?
     if [ $RETVAL -ne 0 ]; then
@@ -53,6 +95,12 @@ start() {
 }
 
 stop() {
+    get_supervise_pid
+    if [ $pid -lt 0 ]; then
+      echo "$SERVNAME already stopped."
+      exit 1
+    fi
+
     echo "Stopping <%= server_type %> <%= server_name %>..."
     get_serv_pid
     if [ $pid -gt 0 ]; then
@@ -76,9 +124,27 @@ stop() {
     else
         echo "$SERVNAME already stopped."
     fi
+
+    # stop supervise
+    get_supervise_pid
+    if [ $pid -gt 0 ]; then
+        kill -9 $pid
+        sleep $SLEEP_INTERVAL
+        kill -0 $pid >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            echo "ERROR: Failed to stop a supervise process: $pid"
+            exit 1
+        fi
+    fi
 }
 
 status() {
+    get_supervise_pid
+    if [ $pid -lt 0 ]; then
+      echo "$SERVNAME already stopped."
+      exit 3
+    fi
+
     get_serv_pid
     if [ $pid -gt 0 ]; then
         echo "$SERVNAME is running: pid=$pid";
