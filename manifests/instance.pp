@@ -1,6 +1,7 @@
 # sedue_home is provided as a custom fact.
 
-define sedue::instance($user, $instance, $config_servers) {
+define sedue::instance($user, $instance, $config_servers,
+  $run) {
   sedue::serve_supervise { "sedue::${instance}::serve_supervise":
     user => $user,
     instance => $instance
@@ -11,7 +12,7 @@ define sedue::instance($user, $instance, $config_servers) {
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'searcher',
-    run => true
+    run => $run['searcher']
   }
 
   sedue::server { "sedue::${instance}::query_server":
@@ -19,7 +20,7 @@ define sedue::instance($user, $instance, $config_servers) {
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'query-server',
-    run => true
+    run => $run['query-server']
   }
 
   sedue::server { "sedue::${instance}::indexer":
@@ -27,7 +28,7 @@ define sedue::instance($user, $instance, $config_servers) {
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'indexer',
-    run => false
+    run => $run['indexer']
   }
 
   sedue::server { "sedue::${instance}::document_repository":
@@ -35,7 +36,7 @@ define sedue::instance($user, $instance, $config_servers) {
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'document-repository',
-    run => false
+    run => $run['document-repository']
   }
 
   sedue::server { "sedue::${instance}::archive_manager":
@@ -43,7 +44,7 @@ define sedue::instance($user, $instance, $config_servers) {
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'archive-manager',
-    run => false
+    run => $run['archive-manager']
   }
 
   sedue::server { "sedue::${instance}::assist_server":
@@ -51,7 +52,7 @@ define sedue::instance($user, $instance, $config_servers) {
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'assist-server',
-    run => false
+    run => $run['assist-server']
   }
 
   # TODO: create all necessary directories like $SEDUE_HOME/arc-dir/$INSTANCE
