@@ -27,7 +27,7 @@ define sedue::instance($user, $instance, $config_servers) {
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'indexer',
-    run => true
+    run => false
   }
 
   sedue::server { "sedue::${instance}::document_repository":
@@ -35,7 +35,7 @@ define sedue::instance($user, $instance, $config_servers) {
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'document-repository',
-    run => true
+    run => false
   }
 
   sedue::server { "sedue::${instance}::archive_manager":
@@ -43,7 +43,7 @@ define sedue::instance($user, $instance, $config_servers) {
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'archive-manager',
-    run => true
+    run => false
   }
 
   sedue::server { "sedue::${instance}::assist_server":
@@ -51,7 +51,7 @@ define sedue::instance($user, $instance, $config_servers) {
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'assist-server',
-    run => true
+    run => false
   }
 
   # TODO: create all necessary directories like $SEDUE_HOME/arc-dir/$INSTANCE

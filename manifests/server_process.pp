@@ -1,4 +1,4 @@
-define sedue::server_process($instance, $status, $server_type) {
+define sedue::server_process($instance, $server_type, $run) {
   case $server_type {
     'searcher': {
       $server_bin_name = 'sedue-rpc-searcher'
@@ -26,12 +26,18 @@ define sedue::server_process($instance, $status, $server_type) {
     }
   }
 
+  if $run {
+    $status = 'running'
+  } else {
+    $status = 'stopped'
+  }
+
   service { "${server_type}_process":
     path => "${sedue_home}/etc/init.d/",
     name => "${server_script_name}-${instance}",
     ensure => $status,
     hasstatus => 'true', # this need to be true
-    provider => 'init',
-    require => Class["sedue::serve_supervise"]
+    provider => 'init'
+    # A dependency on a corresponding init-script is solved by server.pp
   }
 }
