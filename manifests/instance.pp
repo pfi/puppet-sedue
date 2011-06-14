@@ -1,21 +1,23 @@
 # sedue_home is provided as a custom fact.
 
-class sedue::instance($instance) {
-  class { 'sedue::serve_supervise':
+define sedue::instance($instance) {
+  sedue::serve_supervise { "sedue::${instance}::serve_supervise":
     user => 'nobu',
     instance => $instance
   }
 
-  class { 'sedue::searcher_script':
+  sedue::server_script { "sedue::${instance}::searcher_script":
     user => 'nobu',
     instance => $instance,
-    config_servers => 'bull0:25999'
+    config_servers => 'bull0:25999',
+    server_type => 'searcher'
   }
 
-  class { 'sedue::indexer_script':
+  sedue::server_script { "sedue::${instance}::indexer_script":
     user => 'nobu',
     instance => $instance,
-    config_servers => 'bull0:25999'
+    config_servers => 'bull0:25999',
+    server_type => 'indexer'
   }
 
   # TODO: create all necessary directories like $SEDUE_HOME/arc-dir/$INSTANCE

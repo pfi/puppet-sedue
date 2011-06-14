@@ -1,5 +1,4 @@
-class sedue::serve_supervise($user, $instance) {
-  # TODO: this does not create a new directory?
+define sedue::serve_supervise($user, $instance) {
   file { 'serve_directory':
     path => "${sedue_home}/etc/serve/${instance}",
     ensure => 'directory',
