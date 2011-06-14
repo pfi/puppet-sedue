@@ -2,9 +2,15 @@
 
 define sedue::instance($user, $instance, $config_servers,
   $run) {
-  sedue::serve_supervise { "sedue::${instance}::serve_supervise":
+  sedue::directories { "sedue::${instance}::directories":
     user => $user,
     instance => $instance
+  }
+
+  sedue::serve_supervise { "sedue::${instance}::serve_supervise":
+    user => $user,
+    instance => $instance,
+    require => Sedue::Directories["sedue::${instance}::directories"]
   }
 
   sedue::server { "sedue::${instance}::searcher":
