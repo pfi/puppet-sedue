@@ -6,14 +6,14 @@ define sedue::instance($user, $instance, $config_servers) {
     instance => $instance
   }
 
-  sedue::server_script { "sedue::${instance}::searcher_script":
+  sedue::server { "sedue::${instance}::searcher":
     user => $user,
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'searcher'
   }
 
-  sedue::server_script { "sedue::${instance}::indexer_script":
+  sedue::server { "sedue::${instance}::indexer":
     user => $user,
     instance => $instance,
     config_servers => $config_servers,
