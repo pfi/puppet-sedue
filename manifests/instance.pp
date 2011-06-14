@@ -10,14 +10,16 @@ define sedue::instance($user, $instance, $config_servers) {
     user => $user,
     instance => $instance,
     config_servers => $config_servers,
-    server_type => 'searcher'
+    server_type => 'searcher',
+    run => true
   }
 
   sedue::server { "sedue::${instance}::indexer":
     user => $user,
     instance => $instance,
     config_servers => $config_servers,
-    server_type => 'indexer'
+    server_type => 'indexer',
+    run => false
   }
 
   # TODO: create all necessary directories like $SEDUE_HOME/arc-dir/$INSTANCE

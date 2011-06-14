@@ -1,4 +1,6 @@
-define sedue::server_script($user, $instance, $config_servers, $server_type) {
+# dependency on server_process is resolved by server.pp
+
+define sedue::server_script($user, $instance, $config_servers, $server_type, $run) {
   # TODO: make these parameters assignable
   $server_sleep_interval = 3
   $server_name = '' # TODO: make this hostname or the value of name parameter
@@ -30,37 +32,65 @@ define sedue::server_script($user, $instance, $config_servers, $server_type) {
     }
   }
 
-  # files for serve supervise
-  file { "${server_type}_run_file":
-    path => "${sedue_home}/etc/serve/${instance}/${server_script_name}.run",
-    owner => $user,
-    group => $user,
-    mode => '0755',
-    content => template("sedue/server.run.erb"),
-    require => File['serve_directory']
-  }
+  if $run {
+    # generate files for serve supervise
+    file { "${server_type}_run_file":
+      path => "${sedue_home}/etc/serve/${instance}/${server_script_name}.run",
+      owner => $user,
+      group => $user,
+      mode => '0755',
+      content => template("sedue/server.run.erb"),
+      require => File['serve_directory']
+    }
 
-  file { "${server_type}_run_directory":
-    path => "${sedue_home}/etc/serve/${instance}/${server_script_name}",
-    owner => $user,
-    group => $user,
-    mode => '0755',
-    ensure => 'directory',
-    require => File['serve_directory']
-  }
+    file { "${server_type}_run_directory":
+      path => "${sedue_home}/etc/serve/${instance}/${server_script_name}",
+      owner => $user,
+      group => $user,
+      mode => '0755',
+      ensure => 'directory',
+      require => File['serve_directory']
+    }
 
-  file { "${server_type}_run_symlink":
-    path => "${sedue_home}/etc/serve/${instance}/${server_script_name}/run",
-    ensure => 'link',
-    target => "${sedue_home}/etc/serve/${instance}/${server_script_name}.run",
-    require => [File["${server_type}_run_file"], File["${server_type}_run_directory"]]
-  }
+    file { "${server_type}_run_symlink":
+      path => "${sedue_home}/etc/serve/${instance}/${server_script_name}/run",
+      ensure => 'link',
+      target => "${sedue_home}/etc/serve/${instance}/${server_script_name}.run",
+      require => [File["${server_type}_run_file"], File["${server_type}_run_directory"]]
+    }
 
-  file { "${server_type}_init_script":
-    path => "${sedue_home}/etc/init.d/${server_script_name}-${instance}",
-    owner => $user,
-    group => $user,
-    mode => '0755',
-    content => template("sedue/server.init.d.erb")
+    file { "${server_type}_init_script":
+      path => "${sedue_home}/etc/init.d/${server_script_name}-${instance}",
+      owner => $user,
+      group => $user,
+      mode => '0755',
+      content => template("sedue/server.init.d.erb")
+    }
+
+  } else {
+    # remove all unnecessary files
+    file { "${server_type}_run_symlink":
+      path => "${sedue_home}/etc/serve/${instance}/${server_script_name}/run",
+      ensure => 'absent',
+      require => File['serve_directory']
+    }
+
+    file { "${server_type}_run_directory":
+      path => "${sedue_home}/etc/serve/${instance}/${server_script_name}",
+      ensure => 'absent',
+      force => true, # to remove dir/control, dir/stat
+      require => File["${server_type}_run_symlink"]
+    }
+
+    file { "${server_type}_run_file":
+      path => "${sedue_home}/etc/serve/${instance}/${server_script_name}.run",
+      ensure => 'absent',
+      require => File["${server_type}_run_symlink"]
+    }
+
+    file { "${server_type}_init_script":
+      path => "${sedue_home}/etc/init.d/${server_script_name}-${instance}",
+      ensure => 'absent',
+    }
   }
 }
