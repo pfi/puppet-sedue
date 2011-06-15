@@ -10,7 +10,7 @@ define sedue::serve_supervise($user, $instance) {
   # generate symbolic link whose name contains the instance name
   # for grepability of process names.
   file { 'serve_supervise_bin_symlink':
-    path => "${sedue_home}/bin/serve-supervise-${instance_name}",
+    path => "${sedue_home}/bin/serve-supervise-${instance}",
     ensure => link,
     target => "${sedue_home}/bin/serve-supervise"
   }
