@@ -28,7 +28,7 @@ define sedue::mongodb($user, $instance, $port, $pair, $run) {
       group => $user,
       mode => '0755',
       content => template("sedue/mongodb.run.erb"),
-      require => File['serve_directory']
+      require => File["${instance}_serve_directory"]
     }
 
     file { "sedue::${instance}_mongodb_run_directory":
@@ -37,7 +37,7 @@ define sedue::mongodb($user, $instance, $port, $pair, $run) {
       group => $user,
       mode => '0755',
       ensure => 'directory',
-      require => File['serve_directory']
+      require => File["${instance}_serve_directory"]
     }
 
     file { "sedue::${instance}_mongodb_run_symlink":
@@ -82,7 +82,7 @@ define sedue::mongodb($user, $instance, $port, $pair, $run) {
     file { "sedue::${instance}_mongodb_run_symlink":
       path => "${sedue_home}/etc/serve/${instance}/mongodb/run",
       ensure => 'absent',
-      require => File['serve_directory']
+      require => File["${instance}_serve_directory"]
     }
 
     file { "sedue::${instance}_mongodb_run_directory":

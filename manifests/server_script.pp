@@ -40,7 +40,7 @@ define sedue::server_script($user, $instance, $config_servers, $server_type, $ru
       group => $user,
       mode => '0755',
       content => template("sedue/server.run.erb"),
-      require => File['serve_directory']
+      require => File["${instance}_serve_directory"]
     }
 
     file { "${server_type}_run_directory":
@@ -49,7 +49,7 @@ define sedue::server_script($user, $instance, $config_servers, $server_type, $ru
       group => $user,
       mode => '0755',
       ensure => 'directory',
-      require => File['serve_directory']
+      require => File["${instance}_serve_directory"]
     }
 
     file { "${server_type}_run_symlink":
@@ -72,7 +72,7 @@ define sedue::server_script($user, $instance, $config_servers, $server_type, $ru
     file { "${server_type}_run_symlink":
       path => "${sedue_home}/etc/serve/${instance}/${server_script_name}/run",
       ensure => 'absent',
-      require => File['serve_directory']
+      require => File["${instance}_serve_directory"]
     }
 
     file { "${server_type}_run_directory":
