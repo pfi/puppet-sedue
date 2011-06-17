@@ -1,14 +1,5 @@
 # Removal of these directories should be done manually.
 
-define sedue::directory($user, $instance, $name) {
-  file { "${sedue_home}/${name}/${instance}":
-    owner => $user,
-    group => $user,
-    mode => '0755',
-    ensure => 'directory'
-  }
-}
-
 define sedue::directories($user, $instance) {
   # repos/${instance} is created by backend DB(e.g. MongoDB's puppet)
 
