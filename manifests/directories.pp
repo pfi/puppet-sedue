@@ -6,42 +6,42 @@ define sedue::directories($user, $instance) {
   sedue::directory { "sedue::${instance}_directory_arc_dir":
     user => $user,
     instance => $instance,
-    name => 'arc-dir'
+    category => 'arc-dir'
   }
 
   sedue::directory { "sedue::${instance}_directory_tmp":
     user => $user,
     instance => $instance,
-    name => 'tmp'
+    category => 'tmp'
   }
 
   sedue::directory { "sedue::${instance}_directory_indexing":
     user => $user,
     instance => $instance,
-    name => 'indexing'
+    category => 'indexing'
   }
 
   sedue::directory { "sedue::${instance}_directory_export":
     user => $user,
     instance => $instance,
-    name => 'export'
+    category => 'export'
   }
 
   sedue::directory { "sedue::${instance}_directory_log":
     user => $user,
     instance => $instance,
-    name => 'log'
+    category => 'log'
   }
 
   sedue::directory { "sedue::${instance}_directory_append_log":
     user => $user,
     instance => $instance,
-    name => 'append-log'
+    category => 'append-log'
   }
 
   sedue::directory { "sedue::${instance}_directory_assist_arc_dir":
     user => $user,
     instance => $instance,
-    name => 'assist-arc-dir'
+    category => 'assist-arc-dir'
   }
 }

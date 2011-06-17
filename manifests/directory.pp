@@ -1,5 +1,5 @@
-define sedue::directory($user, $instance, $name) {
-  file { "${sedue_home}/${name}/${instance}":
+define sedue::directory($user, $instance, $category) {
+  file { "${sedue_home}/${category}/${instance}":
     owner => $user,
     group => $user,
     mode => '0755',
