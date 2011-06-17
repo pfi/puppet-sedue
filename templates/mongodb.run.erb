@@ -1,0 +1,24 @@
+#!/bin/bash
+. <%= sedue_home -%>/sedue-env.sh
+
+sleep 10
+export SEDUE_HOME=<%= sedue_home %>
+export INSTANCE=<%= instance %>
+export DB_PATH="$SEDUE_HOME/repos/$INSTANCE"
+export SEDUE_SERVER="$SEDUE_HOME/bin/mongod"
+export SEDUE_SERVER_NAME="mongodb"
+
+export LOG="$SEDUE_HOME/log/$INSTANCE/error.log"
+export BTLOG="$SEDUE_HOME/log/$INSTANCE/$SEDUE_SERVER_NAME-backtrace.log"
+export LOCKFILE="$DB_PATH/mongod.lock"
+
+echo "LAUNCH $SEDUE_SERVER_NAME" >> $LOG
+if [ -f $LOCKFILE ]; then
+  echo "ERROR: $LOCKFILE exists. MongoDB halted in an unexpected way!"   >>$BTLOG 2>&1
+  echo "The database file could be corrupted."                           >>$BTLOG 2>&1
+  echo "Check the database file, and erase mongod.lock file."            >>$BTLOG 2>&1
+  echo "see: http://dochub.mongodb.org/core/repair for more information" >>$BTLOG 2>&1
+  exit 1
+fi
+
+exec $SEDUE_SERVER --dbpath $DB_PATH <%= mongodb_options -%> >>$BTLOG 2>&1
