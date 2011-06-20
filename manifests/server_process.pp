@@ -24,6 +24,10 @@ define sedue::server_process($instance, $server_type, $run) {
       $server_bin_name = 'sedue-assist-server'
       $server_script_name = 'sedue-assist-server'
     }
+    'mongodb': {
+      $server_bin_name = 'mongodb'
+      $server_script_name = 'mongodb'
+    }
   }
 
   if $run {
