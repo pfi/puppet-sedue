@@ -36,7 +36,7 @@ define sedue::server_process($instance, $server_type, $run) {
     $status = 'stopped'
   }
 
-  service { "${server_type}_process":
+  service { "${instance}_${server_type}_process":
     path => "${sedue_home}/etc/init.d/",
     name => "${server_script_name}-${instance}",
     ensure => $status,
