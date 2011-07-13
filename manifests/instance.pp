@@ -1,6 +1,6 @@
 # sedue_home is provided as a custom fact.
 
-define sedue::instance($user, $instance, $config_servers,
+define sedue::instance($user, $instance, $config_servers, $repository,
   $run) {
   sedue::directories { "sedue::${instance}::directories":
     user => $user,
@@ -37,12 +37,22 @@ define sedue::instance($user, $instance, $config_servers,
     run => $run['indexer']
   }
 
+  # for document-repository backend
+  sedue::mongodb { "sedue::${instance}::mongodb_repository":
+    user => $user,
+    instance => $instance,
+    port => $repository['port'],
+    pair => $repository['pair'],
+    run => $repository['run']
+  }
+
   sedue::server { "sedue::${instance}::document_repository":
     user => $user,
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'document-repository',
-    run => $run['document-repository']
+    run => $run['document-repository'],
+    require => Sedue::Mongodb["sedue::${instance}::mongodb_repository"]
   }
 
   sedue::server { "sedue::${instance}::archive_manager":
