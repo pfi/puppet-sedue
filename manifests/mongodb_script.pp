@@ -43,6 +43,6 @@ define sedue::mongodb_script($user, $instance, $port, $pair, $run) {
     owner => $user,
     group => $user,
     mode => '0755',
-    content => template("sedue/server.init.d.erb")
+    content => template("sedue/mongodb.init.d.erb")
   }
 }
