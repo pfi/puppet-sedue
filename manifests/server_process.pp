@@ -28,6 +28,10 @@ define sedue::server_process($instance, $server_type, $run) {
       $server_bin_name = 'mongodb'
       $server_script_name = 'mongodb'
     }
+    'proxy': {
+      $server_bin_name = 'sedue_proxy'
+      $server_script_name = 'sedue_proxy'
+    }
   }
 
   if $run {
