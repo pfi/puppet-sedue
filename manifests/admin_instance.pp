@@ -16,7 +16,7 @@ define sedue::admin_instance($user, $instance, $admin_conf, $config_server) {
   # I use 'if !defined' to avoid this problem.
   if !defined(File["sedue::admin::conf_directory"]) {
     file { "sedue::admin::conf_directory":
-      path => "${sedue_home}/etc/admin",
+      path => "${sedue_home}/etc/${instance}",
       owner => $user,
       group => $user,
       mode => '0755',
@@ -25,7 +25,7 @@ define sedue::admin_instance($user, $instance, $admin_conf, $config_server) {
   }
 
   file { "sedue::${instance}::admin::conf_file":
-    path => "${sedue_home}/etc/admin/${instance}.conf",
+    path => "${sedue_home}/etc/${instance}/admin.conf",
     owner => $user,
     group => $user,
     mode => '0644',
