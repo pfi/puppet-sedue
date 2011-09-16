@@ -1,0 +1,10 @@
+#!/bin/bash
+. <%= sedue_home -%>/sedue-env.sh
+
+sleep 10
+export SEDUE_HOME=<%= sedue_home %>
+export INSTANCE=<%= instance %>
+
+export BTLOG="$SEDUE_HOME/log/$INSTANCE/memcached.log"
+
+exec $SEDUE_HOME/bin/memcached <%= port_option -%> -c 65536 -m 1024 >>$BTLOG 2>&1
