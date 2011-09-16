@@ -1,9 +1,9 @@
 # dependency on server_process is resolved by server.pp
 
-define sedue::server_script($user, $instance, $config_servers, $server_type, $run) {
+define sedue::server_script($user, $instance, $config_servers, $server_type, $option) {
   # TODO: make these parameters assignable
   $server_sleep_interval = 3
-  $server_name = '' # TODO: make this hostname or the value of name parameter
+  $server_name = $option['name']
 
   case $server_type {
     'searcher': {

@@ -12,4 +12,4 @@ export LOG="$SEDUE_HOME/log/$INSTANCE/error.log"
 export BTLOG="$SEDUE_HOME/log/$INSTANCE/$SEDUE_SERVER_NAME-backtrace.log"
 
 echo "LAUNCH $SEDUE_SERVER_NAME: confsvrs=<%= config_servers -%>" >> $LOG
-exec $SEDUE_SERVER -instance_name $INSTANCE -confsvr_type mongodb -confsvrs <%= config_servers -%> -noconf -stderrthreshold 3 2>>$BTLOG
+exec $SEDUE_SERVER <%= server_name.empty? ? "" : "-name #{server_name}" %> -instance_name $INSTANCE -confsvr_type mongodb -confsvrs <%= config_servers -%> -noconf -stderrthreshold 3 2>>$BTLOG
