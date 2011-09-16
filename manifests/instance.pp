@@ -1,7 +1,7 @@
 # sedue_home is provided as a custom fact.
 
 define sedue::instance($user, $instance, $config_servers, $repository,
-  $run) {
+  $servers) {
   sedue::directories { "sedue::${instance}::directories":
     user => $user,
     instance => $instance
@@ -18,7 +18,7 @@ define sedue::instance($user, $instance, $config_servers, $repository,
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'searcher',
-    run => $run['searcher']
+    option => $servers['searcher']
   }
 
   sedue::server { "sedue::${instance}::query_server":
@@ -26,7 +26,7 @@ define sedue::instance($user, $instance, $config_servers, $repository,
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'query-server',
-    run => $run['query-server']
+    option => $servers['query-server']
   }
 
   sedue::server { "sedue::${instance}::indexer":
@@ -34,7 +34,7 @@ define sedue::instance($user, $instance, $config_servers, $repository,
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'indexer',
-    run => $run['indexer']
+    option => $servers['indexer']
   }
 
   # for document-repository backend
@@ -51,7 +51,7 @@ define sedue::instance($user, $instance, $config_servers, $repository,
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'document-repository',
-    run => $run['document-repository'],
+    option => $servers['document-repository'],
     require => Sedue::Mongodb["sedue::${instance}::mongodb_repository"]
   }
 
@@ -60,7 +60,7 @@ define sedue::instance($user, $instance, $config_servers, $repository,
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'archive-manager',
-    run => $run['archive-manager']
+    option => $servers['archive-manager']
   }
 
   sedue::server { "sedue::${instance}::assist_server":
@@ -68,7 +68,7 @@ define sedue::instance($user, $instance, $config_servers, $repository,
     instance => $instance,
     config_servers => $config_servers,
     server_type => 'assist-server',
-    run => $run['assist-server']
+    option => $servers['assist-server']
   }
 
   # TODO: create all necessary directories like $SEDUE_HOME/arc-dir/$INSTANCE
