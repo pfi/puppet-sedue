@@ -109,7 +109,7 @@ stop() {
     get_supervise_pid
     if [ $pid -lt 0 ]; then
       echo "$SERVNAME already stopped."
-      exit 1
+      return 1
     fi
 
     echo "Stopping <%= server_type %> <%= server_name %>..."
