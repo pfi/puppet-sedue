@@ -14,7 +14,7 @@ define sedue::mongodb_script($user, $instance, $port, $pair, $run) {
 
   # generate files for serve supervise
   file { "sedue::${instance}::mongodb::run_file":
-    path => "${sedue_home}/etc/serve/${instance}/mongodb.run",
+    path => "${::sedue_home}/etc/serve/${instance}/mongodb.run",
     owner => $user,
     group => $user,
     mode => '0755',
@@ -23,7 +23,7 @@ define sedue::mongodb_script($user, $instance, $port, $pair, $run) {
   }
 
   file { "sedue::${instance}::mongodb::run_directory":
-    path => "${sedue_home}/etc/serve/${instance}/mongodb",
+    path => "${::sedue_home}/etc/serve/${instance}/mongodb",
     owner => $user,
     group => $user,
     mode => '0755',
@@ -32,14 +32,14 @@ define sedue::mongodb_script($user, $instance, $port, $pair, $run) {
   }
 
   file { "sedue::${instance}::mongodb::run_symlink":
-    path => "${sedue_home}/etc/serve/${instance}/mongodb/run",
+    path => "${::sedue_home}/etc/serve/${instance}/mongodb/run",
     ensure => 'link',
-    target => "${sedue_home}/etc/serve/${instance}/mongodb.run",
+    target => "${::sedue_home}/etc/serve/${instance}/mongodb.run",
     require => [File["sedue::${instance}::mongodb::run_file"], File["sedue::${instance}::mongodb::run_directory"]]
   }
 
   file { "sedue::${instance}::mongodb::init_script":
-    path => "${sedue_home}/etc/init.d/mongodb-${instance}",
+    path => "${::sedue_home}/etc/init.d/mongodb-${instance}",
     owner => $user,
     group => $user,
     mode => '0755',

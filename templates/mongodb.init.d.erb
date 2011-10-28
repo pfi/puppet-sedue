@@ -3,7 +3,7 @@
 # chkconfig: 345 97 3
 # description: <%= server_type %> @ Sedue search engine.
 
-SEDUE_HOME=<%= sedue_home %>
+SEDUE_HOME=<%= scope.lookupvar('::sedue_home') %>
 INSTANCE_NAME=<%= instance %>
 
 . $SEDUE_HOME/sedue-env.sh

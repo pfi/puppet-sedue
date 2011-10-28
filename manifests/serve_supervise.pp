@@ -1,6 +1,6 @@
 define sedue::serve_supervise($user, $instance) {
   file { "${instance}_serve_directory":
-    path => "${sedue_home}/etc/serve/${instance}",
+    path => "${::sedue_home}/etc/serve/${instance}",
     ensure => 'directory',
     owner => $user,
     group => $user,
@@ -10,8 +10,8 @@ define sedue::serve_supervise($user, $instance) {
   # generate symbolic link whose name contains the instance name
   # for grepability of process names.
   file { "${instance}_serve_supervise_bin_symlink":
-    path => "${sedue_home}/bin/serve-supervise-${instance}",
+    path => "${::sedue_home}/bin/serve-supervise-${instance}",
     ensure => link,
-    target => "${sedue_home}/bin/serve-supervise"
+    target => "${::sedue_home}/bin/serve-supervise"
   }
 }

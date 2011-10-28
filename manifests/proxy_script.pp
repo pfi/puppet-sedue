@@ -3,7 +3,7 @@ define sedue::proxy_script($user, $instance, $port, $options) {
   if ('workers' in $options) and ($options['workers'] > 0) {
     $workers = $options['workers']
   } else {
-    $workers = $processorcount * 2 + 1
+    $workers = $::processorcount * 2 + 1
   }
 
   if 'timeout' in $options {
@@ -15,7 +15,7 @@ define sedue::proxy_script($user, $instance, $port, $options) {
   $bind_address = ":${port}"
 
   file { "sedue::${instance}::admin::proxy_conf_py":
-    path => "${sedue_home}/etc/${instance}/sedue_proxy_conf.py",
+    path => "${::sedue_home}/etc/${instance}/sedue_proxy_conf.py",
     owner => $user,
     group => $user,
     mode => '0644',
@@ -23,7 +23,7 @@ define sedue::proxy_script($user, $instance, $port, $options) {
   }
 
   file { "${instance}_sedue_proxy_run_file":
-    path => "${sedue_home}/etc/serve/${instance}/sedue_proxy.run",
+    path => "${::sedue_home}/etc/serve/${instance}/sedue_proxy.run",
     owner => $user,
     group => $user,
     mode => '0755',
@@ -32,7 +32,7 @@ define sedue::proxy_script($user, $instance, $port, $options) {
   }
 
   file { "${instance}_sedue_proxy_run_directory":
-    path => "${sedue_home}/etc/serve/${instance}/sedue_proxy",
+    path => "${::sedue_home}/etc/serve/${instance}/sedue_proxy",
     owner => $user,
     group => $user,
     mode => '0755',
@@ -41,9 +41,9 @@ define sedue::proxy_script($user, $instance, $port, $options) {
   }
 
   file { "${instance}_sedue_proxy_run_symlink":
-    path => "${sedue_home}/etc/serve/${instance}/sedue_proxy/run",
+    path => "${::sedue_home}/etc/serve/${instance}/sedue_proxy/run",
     ensure => 'link',
-    target => "${sedue_home}/etc/serve/${instance}/sedue_proxy.run",
+    target => "${::sedue_home}/etc/serve/${instance}/sedue_proxy.run",
     require => [File["${instance}_sedue_proxy_run_file"], File["${instance}_sedue_proxy_run_directory"]]
   }
 
@@ -52,7 +52,7 @@ define sedue::proxy_script($user, $instance, $port, $options) {
   $server_sleep_interval = 3
   $server_name = '' # TODO
   file { "${instance}_sedue_proxy_init_script":
-    path => "${sedue_home}/etc/init.d/sedue_proxy-${instance}",
+    path => "${::sedue_home}/etc/init.d/sedue_proxy-${instance}",
     owner => $user,
     group => $user,
     mode => 0755,

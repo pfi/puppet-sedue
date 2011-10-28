@@ -1,8 +1,8 @@
 #!/bin/bash
-. <%= sedue_home -%>/sedue-env.sh
+. <%= scope.lookupvar('::sedue_home') -%>/sedue-env.sh
 
 sleep 10
-export SEDUE_HOME=<%= sedue_home %>
+export SEDUE_HOME=<%= scope.lookupvar('::sedue_home') %>
 export INSTANCE=<%= instance %>
 export DB_PATH="$SEDUE_HOME/repos/$INSTANCE"
 export SEDUE_SERVER="$SEDUE_HOME/bin/mongod"

@@ -2,7 +2,7 @@
 
 define sedue::mongodb($user, $instance, $port, $pair, $run) {
   file { "sedue::${instance}::mongodb::directory_repos":
-    path => "${sedue_home}/repos/${instance}",
+    path => "${::sedue_home}/repos/${instance}",
     owner => $user,
     group => $user,
     mode => '0755',

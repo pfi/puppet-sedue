@@ -45,7 +45,7 @@ define sedue::server_process($instance, $server_type, $run) {
   }
 
   service { "${instance}_${server_type}_process":
-    path => "${sedue_home}/etc/init.d/",
+    path => "${::sedue_home}/etc/init.d/",
     name => "${server_script_name}-${instance}",
     ensure => $status,
     hasstatus => 'true', # this need to be true

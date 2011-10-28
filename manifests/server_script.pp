@@ -34,7 +34,7 @@ define sedue::server_script($user, $instance, $config_servers, $server_type, $op
 
   # generate files for serve supervise
   file { "${instance}_${server_type}_run_file":
-    path => "${sedue_home}/etc/serve/${instance}/${server_script_name}.run",
+    path => "${::sedue_home}/etc/serve/${instance}/${server_script_name}.run",
     owner => $user,
     group => $user,
     mode => '0755',
@@ -43,7 +43,7 @@ define sedue::server_script($user, $instance, $config_servers, $server_type, $op
   }
 
   file { "${instance}_${server_type}_run_directory":
-    path => "${sedue_home}/etc/serve/${instance}/${server_script_name}",
+    path => "${::sedue_home}/etc/serve/${instance}/${server_script_name}",
     owner => $user,
     group => $user,
     mode => '0755',
@@ -52,14 +52,14 @@ define sedue::server_script($user, $instance, $config_servers, $server_type, $op
   }
 
   file { "${instance}_${server_type}_run_symlink":
-    path => "${sedue_home}/etc/serve/${instance}/${server_script_name}/run",
+    path => "${::sedue_home}/etc/serve/${instance}/${server_script_name}/run",
     ensure => 'link',
-    target => "${sedue_home}/etc/serve/${instance}/${server_script_name}.run",
+    target => "${::sedue_home}/etc/serve/${instance}/${server_script_name}.run",
     require => [File["${instance}_${server_type}_run_file"], File["${instance}_${server_type}_run_directory"]]
   }
 
   file { "${instance}_${server_type}_init_script":
-    path => "${sedue_home}/etc/init.d/${server_script_name}-${instance}",
+    path => "${::sedue_home}/etc/init.d/${server_script_name}-${instance}",
     owner => $user,
     group => $user,
     mode => '0755',
