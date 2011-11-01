@@ -8,6 +8,10 @@ INSTANCE_NAME=<%= instance %>
 
 . $SEDUE_HOME/sedue-env.sh
 
+# To avoid failing to get supervise's pid when executing get_supervise_pid,
+# normalize path(replace continuation slashes with a slash and remove the trailing slash)
+SEDUE_HOME=`echo $SEDUE_HOME | sed -e "s/\/\+/\//g" | sed -e "s/\/$//g"`
+
 SERVNAME="<%= server_script_name %>"
 SERVDIR="$SEDUE_HOME/etc/serve/$INSTANCE_NAME"
 SUPERVISE="$SEDUE_HOME/bin/serve-supervise-$INSTANCE_NAME"
