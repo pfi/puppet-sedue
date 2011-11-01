@@ -1,3 +1,3 @@
 Facter.add(:sedue_home) {
-  setcode { ENV['SEDUE_HOME'] }
+  setcode { ENV['SEDUE_HOME'].gsub(/\/+/, '/').gsub(/\/$/, '') }
 }
