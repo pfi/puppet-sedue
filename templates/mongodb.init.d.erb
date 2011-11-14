@@ -18,6 +18,13 @@ SUPERVISE="$SEDUE_HOME/bin/serve-supervise-$INSTANCE_NAME"
 SERV="$SEDUE_HOME/bin/serve -s $SERVDIR"
 SLEEP_INTERVAL=<%= server_sleep_interval %>
 LOCKFILE="$SEDUE_HOME/repos/$INSTANCE_NAME/mongod.lock"
+INIT_SCRIPT_LOG_FILE="$SEDUE_HOME/log/$INSTANCE_NAME/$SERVNAME-initscript.log"
+
+log_echo() {
+  # output to standard output and log file
+  timestamp=`date --rfc-2822`
+  echo $timestamp $1 | tee --append $INIT_SCRIPT_LOG_FILE
+}
 
 get_supervise_pid() {
     pid=-1
@@ -51,7 +58,7 @@ start() {
             rm $SERVDIR/$SERVNAME/control
             RETVAL=$?
             if [ $RETVAL -ne 0 ]; then
-                echo "ERROR: Failed to remove control file. Please remove it manually: $SERVDIR/$SERVNAME/control"
+                log_echo "ERROR: Failed to remove control file. Please remove it manually: $SERVDIR/$SERVNAME/control"
                 exit 1
             fi
         fi
@@ -60,42 +67,42 @@ start() {
         $SUPERVISE -x -d -c $SERVDIR/$SERVNAME/control -s $SERVDIR/$SERVNAME/stat -- $SERVDIR/$SERVNAME.run >/dev/null 2>&1
         RETVAL=$?
         if [ $RETVAL -ne 0 ]; then
-            echo "ERROR: Failed to start supervise process"
+            log_echo "ERROR: Failed to start supervise process"
             exit 1
         fi
 
         sleep $SLEEP_INTERVAL
         get_supervise_pid
         if [ $pid -lt 0 ]; then
-            echo "ERROR: Failed to start supervise process"
+            log_echo "ERROR: Failed to start supervise process"
             exit 1
         fi
     fi
 
     get_serv_pid
     if [ $pid -gt 0 ]; then
-        echo "ERROR: $SERVNAME already running: pid=$pid"
+        log_echo "ERROR: $SERVNAME already running: pid=$pid"
         exit 1
     fi
 
-    echo "Checking $LOCKFILE..."
+    log_echo "Checking $LOCKFILE..."
     if [ -f $LOCKFILE ]; then
-        echo "ERROR: $LOCKFILE exists. MongoDB halted in an unexpected way!"
-        echo "The database file could be corrupted."
-        echo "Check the database file, and erase mongod.lock file."
-        echo "see: http://dochub.mongodb.org/core/repair for more information"
+        log_echo "ERROR: $LOCKFILE exists. MongoDB halted in an unexpected way!"
+        log_echo "The database file could be corrupted."
+        log_echo "Check the database file, and erase mongod.lock file."
+        log_echo "see: http://dochub.mongodb.org/core/repair for more information"
         exit 1
     fi
 
-    echo "Starting <%= server_type %> <%= server_name %>..."
+    log_echo "Starting <%= server_type %> <%= server_name %>..."
 
     $SERV $SERVNAME start
     RETVAL=$?
     if [ $RETVAL -ne 0 ]; then
-        echo "ERROR: Failed to run serve command"
+        log_echo "ERROR: Failed to run serve command"
         exit 1
     fi
-    echo "Waiting..."
+    log_echo "Waiting..."
     for i in `seq 0 10`; do
         get_serv_pid
         if [ $pid -eq 0 ]; then
@@ -104,7 +111,7 @@ start() {
     done
     get_serv_pid
     if [ $pid -eq 0 ]; then
-        echo "ERROR: Failed to start $SERVNAME"
+        log_echo "ERROR: Failed to start $SERVNAME"
         exit 1
     fi
 }
@@ -112,17 +119,17 @@ start() {
 stop() {
     get_supervise_pid
     if [ $pid -lt 0 ]; then
-      echo "$SERVNAME already stopped."
+      log_echo "$SERVNAME already stopped."
       return 1
     fi
 
-    echo "Stopping <%= server_type %> <%= server_name %>..."
+    log_echo "Stopping <%= server_type %> <%= server_name %>..."
     get_serv_pid
     if [ $pid -gt 0 ]; then
         $SERV $SERVNAME kill
         RETVAL=$?
         if [ $RETVAL -ne 0 ]; then
-            echo "ERROR: Failed to run serve command. serve-supervise already died?"
+            log_echo "ERROR: Failed to run serve command. serve-supervise already died?"
             exit 1
         fi
         sleep $SLEEP_INTERVAL
@@ -133,12 +140,12 @@ stop() {
             fi
         done
         if [ $pid -gt 0 ]; then
-            echo "ERROR: Failed to stop $SERVNAME"
+            log_echo "ERROR: Failed to stop $SERVNAME"
             exit 1
         fi
 	rm -f $LOCKFILE
     else
-        echo "$SERVNAME already stopped."
+        log_echo "$SERVNAME already stopped."
     fi
 
     # stop supervise
@@ -148,7 +155,7 @@ stop() {
         sleep $SLEEP_INTERVAL
         kill -0 $pid >/dev/null 2>&1
         if [ $? -eq 0 ]; then
-            echo "ERROR: Failed to stop a supervise process: $pid"
+            log_echo "ERROR: Failed to stop a supervise process: $pid"
             exit 1
         fi
     fi
@@ -157,16 +164,16 @@ stop() {
 status() {
     get_supervise_pid
     if [ $pid -lt 0 ]; then
-      echo "$SERVNAME already stopped."
+      log_echo "$SERVNAME already stopped."
       exit 3
     fi
 
     get_serv_pid
     if [ $pid -gt 0 ]; then
-        echo "$SERVNAME is running: pid=$pid";
+        log_echo "$SERVNAME is running: pid=$pid";
         exit 0
     else
-        echo "$SERVNAME already stopped."
+        log_echo "$SERVNAME already stopped."
         exit 3
     fi
 }
@@ -186,6 +193,6 @@ case "$1" in
         status
         ;;
     *)
-echo "Usage: `basename $0` {start|stop|restart|status}"
+log_echo "Usage: `basename $0` {start|stop|restart|status}"
         exit 1
 esac
