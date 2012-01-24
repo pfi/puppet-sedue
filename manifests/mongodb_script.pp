@@ -1,6 +1,6 @@
 # sedue::mongodb assumes sedue::supervise already called
 
-define sedue::mongodb_script($user, $instance, $port, $pair, $run) { 
+define sedue::mongodb_script($user, $instance, $port, $pair, $dir, $run) {
   $server_sleep_interval = 3
   $server_name = 'mongodb'
   $server_type = 'db'

@@ -4,7 +4,7 @@
 sleep 10
 export SEDUE_HOME=<%= scope.lookupvar('::sedue_home') %>
 export INSTANCE=<%= instance %>
-export DB_PATH="$SEDUE_HOME/repos/$INSTANCE"
+export DB_PATH=<%= dir %>
 export SEDUE_SERVER="$SEDUE_HOME/bin/mongod"
 export SEDUE_SERVER_NAME="mongodb"
 

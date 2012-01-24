@@ -38,6 +38,7 @@ define sedue::admin_instance($user, $instance, $admin_conf, $config_server) {
     instance => $instance,
     port => $config_server['port'],
     pair => $config_server['pair'],
+    dir => $config_server['dir'],
     run => $config_server['run'],
     require => File["sedue::${instance}::admin::conf_file"]
   }

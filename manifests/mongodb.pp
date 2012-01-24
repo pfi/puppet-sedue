@@ -1,8 +1,8 @@
 # sedue::mongodb assumes sedue::supervise already called
 
-define sedue::mongodb($user, $instance, $port, $pair, $run) {
+define sedue::mongodb($user, $instance, $port, $pair, $dir, $run) {
   file { "sedue::${instance}::mongodb::directory_repos":
-    path => "${::sedue_home}/repos/${instance}",
+    path => $dir,
     owner => $user,
     group => $user,
     mode => '0755',
@@ -15,6 +15,7 @@ define sedue::mongodb($user, $instance, $port, $pair, $run) {
     instance => $instance,
     port => $port,
     pair => $pair,
+    dir => $dir,
     run => $run,
     require => File["sedue::${instance}::mongodb::directory_repos"]
   }

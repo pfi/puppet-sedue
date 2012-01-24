@@ -43,6 +43,7 @@ define sedue::instance($user, $instance, $config_servers, $repository,
     instance => $instance,
     port => $repository['port'],
     pair => $repository['pair'],
+    dir => "${::sedue_home}/repos/${instance}",
     run => $repository['run']
   }
 
