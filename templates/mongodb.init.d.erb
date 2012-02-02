@@ -17,7 +17,7 @@ SERVDIR="$SEDUE_HOME/etc/serve/$INSTANCE_NAME"
 SUPERVISE="$SEDUE_HOME/bin/serve-supervise-$INSTANCE_NAME"
 SERV="$SEDUE_HOME/bin/serve -s $SERVDIR"
 SLEEP_INTERVAL=<%= server_sleep_interval %>
-LOCKFILE="$SEDUE_HOME/repos/$INSTANCE_NAME/mongod.lock"
+LOCKFILE="<%= dir %>/mongod.lock"
 INIT_SCRIPT_LOG_FILE="$SEDUE_HOME/log/$INSTANCE_NAME/$SERVNAME-initscript.log"
 
 log_echo() {
