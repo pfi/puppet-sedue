@@ -115,7 +115,7 @@ stop() {
     log_echo "Stopping <%= server_type %> <%= server_name %>..."
     get_serv_pid
     if [ $pid -gt 0 ]; then
-        $SERV $SERVNAME kill
+        $SERV $SERVNAME <%= server_script_name == 'sedue-document-repository' ? 'term' : 'kill' %>
         RETVAL=$?
         if [ $RETVAL -ne 0 ]; then
             log_echo "ERROR: Failed to run serve command. serve-supervise already died?"
