@@ -37,23 +37,37 @@ define sedue::instance($user, $instance, $config_servers, $repository,
     option => $servers['indexer']
   }
 
-  # for document-repository backend
-  sedue::mongodb { "sedue::${instance}::mongodb_repository":
-    user => $user,
-    instance => $instance,
-    port => $repository['port'],
-    pair => $repository['pair'],
-    dir => "${::sedue_home}/repos/${instance}",
-    run => $repository['run']
-  }
-
-  sedue::server { "sedue::${instance}::document_repository":
-    user => $user,
-    instance => $instance,
-    config_servers => $config_servers,
-    server_type => 'document-repository',
-    option => $servers['document-repository'],
-    require => Sedue::Mongodb["sedue::${instance}::mongodb_repository"]
+  if $repository['type'] == 'mongodb' {
+    sedue::mongodb { "sedue::${instance}::mongodb_repository":
+      user => $user,
+      instance => $instance,
+      port => $repository['port'],
+      pair => $repository['pair'],
+      dir => "${::sedue_home}/repos/${instance}",
+      run => $repository['run']
+    }
+    sedue::server { "sedue::${instance}::document_repository":
+      user => $user,
+      instance => $instance,
+      config_servers => $config_servers,
+      server_type => 'document-repository',
+      option => $servers['document-repository'],
+      require => Sedue::Mongodb["sedue::${instance}::mongodb_repository"]
+    }
+  } else {
+    sedue::directory { "sedue::${instance}::document_repository::directory_repos":
+      user => $user,
+      instance => $instance,
+      category => "repos"
+    }
+    sedue::server { "sedue::${instance}::document_repository":
+      user => $user,
+      instance => $instance,
+      config_servers => $config_servers,
+      server_type => 'document-repository',
+      option => $servers['document-repository'],
+      require => Sedue::Directory["sedue::${instance}::document_repository::directory_repos"]
+    }
   }
 
   sedue::server { "sedue::${instance}::archive_manager":
